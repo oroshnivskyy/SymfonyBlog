@@ -1,174 +1,65 @@
-Symfony Standard Edition
-========================
+# Symfony CMF Standard Edition [![Build Status](https://secure.travis-ci.org/symfony-cmf/symfony-cmf-standard.png?branch=master)](http://travis-ci.org/symfony-cmf/symfony-cmf-standard)
 
-Welcome to the Symfony Standard Edition - a fully-functional Symfony2
-application that you can use as the skeleton for your new applications.
+### You will need:
+  * Git 1.6+
+  * PHP 5.3.3+
+  * php5-intl
+  * phpunit 3.6+ (optional)
+  * composer
 
-This document contains information on how to download, install, and start
-using Symfony. For a more detailed explanation, see the [Installation][1]
-chapter of the Symfony Documentation.
+## Get the code
 
-1) Installing the Standard Edition
-----------------------------------
 
-When it comes to installing the Symfony Standard Edition, you have the
-following options.
+    curl -s http://getcomposer.org/installer | php --
+    php composer.phar create-project --stability dev symfony-cmf/standard-edition path/to/install
 
-### Use Composer (*recommended*)
+This will fetch the main project and all it's dependencies.
 
-As Symfony uses [Composer][2] to manage its dependencies, the recommended way
-to create a new project is to use it.
+The next step is to setup the database, if you want to use Sqlite as your database backend just go ahead and run the following:
 
-If you don't have Composer yet, download it following the instructions on
-http://getcomposer.org/ or just run the following command:
+    app/console doctrine:database:create
+    app/console doctrine:phpcr:init:dbal
+    app/console doctrine:phpcr:repository:init
+    app/console doctrine:phpcr:fixtures:load
 
-    curl -s http://getcomposer.org/installer | php
+If you prefer to use another database backend, for example MySQL, run the Symfony configurator (point your browser 
+to /web/config.php) or set your database connection parameters in app/config/parameters.yml. Make sure you leave
+the 'database_path' property at 'null' in order to use another driver than SQLite. Leaving the field blank in the
+web-configurator should set it to 'null'.
 
-Then, use the `create-project` command to generate a new Symfony application:
+## Access by web browser
 
-    php composer.phar create-project symfony/framework-standard-edition path/to/install
+Create an apache virtual host entry along the lines of
 
-Composer will install Symfony and all its dependencies under the
-`path/to/install` directory.
+    <Virtualhost *:80>
+        Servername symfony-cmf-standard.lo
+        DocumentRoot /path/to/symfony-cmf/symfony-cmf-standard/web
+        <Directory /path/to/symfony-cmf/symfony-cmf-standard>
+            AllowOverride All
+        </Directory>
+    </Virtualhost>
 
-### Download an Archive File
+And add an entry to your hosts file for "symfony-cmf-standard.lo"
 
-To quickly test Symfony, you can also download an [archive][3] of the Standard
-Edition and unpack it somewhere under your web server root directory.
+If you are running Symfony2 for the first time, run http://symfony-cmf-standard.lo/config.php to ensure your
+system settings have been setup inline with the expected behaviour of the Symfony2 framework.
 
-If you downloaded an archive "without vendors", you also need to install all
-the necessary dependencies. Download composer (see above) and run the
-following command:
+Then point your browser to http://symfony-cmf-standard.lo/app_dev.php or http://symfony-cmf-standard.lo
 
-    php composer.phar install
+Functional tests are written with PHPUnit. Note that Bundles and Components are tested independently.
 
-2) Checking your System Configuration
--------------------------------------
+    app/console doctrine:phpcr:workspace:create standard_test
+    phpunit -c app
 
-Before starting coding, make sure that your local system is properly
-configured for Symfony.
+## Configuration
 
-Execute the `check.php` script from the command line:
+You can use the same steps as for the Symfony2 Standard Edition to check and configure the application:
+https://github.com/symfony/symfony-standard#2-checking-your-system-configuration
 
-    php app/check.php
+Note that if you want to improve performance you can enable the caching system:
+https://github.com/symfony-cmf/symfony-cmf-standard/blob/master/app/config/parameters.yml#L10
 
-Access the `config.php` script from a browser:
-
-    http://localhost/path/to/symfony/app/web/config.php
-
-If you get any warnings or recommendations, fix them before moving on.
-
-3) Browsing the Demo Application
---------------------------------
-
-Congratulations! You're now ready to use Symfony.
-
-From the `config.php` page, click the "Bypass configuration and go to the
-Welcome page" link to load up your first Symfony page.
-
-You can also use a web-based configurator by clicking on the "Configure your
-Symfony Application online" link of the `config.php` page.
-
-To see a real-live Symfony page in action, access the following page:
-
-    web/app_dev.php/demo/hello/Fabien
-
-4) Getting started with Symfony
--------------------------------
-
-This distribution is meant to be the starting point for your Symfony
-applications, but it also contains some sample code that you can learn from
-and play with.
-
-A great way to start learning Symfony is via the [Quick Tour][4], which will
-take you through all the basic features of Symfony2.
-
-Once you're feeling good, you can move onto reading the official
-[Symfony2 book][5].
-
-A default bundle, `AcmeDemoBundle`, shows you Symfony2 in action. After
-playing with it, you can remove it by following these steps:
-
-  * delete the `src/Acme` directory;
-
-  * remove the routing entries referencing AcmeBundle in
-    `app/config/routing_dev.yml`;
-
-  * remove the AcmeBundle from the registered bundles in `app/AppKernel.php`;
-
-  * remove the `web/bundles/acmedemo` directory;
-
-  * remove the `security.providers`, `security.firewalls.login` and
-    `security.firewalls.secured_area` entries in the `security.yml` file or
-    tweak the security configuration to fit your needs.
-
-What's inside?
----------------
-
-The Symfony Standard Edition is configured with the following defaults:
-
-  * Twig is the only configured template engine;
-
-  * Doctrine ORM/DBAL is configured;
-
-  * Swiftmailer is configured;
-
-  * Annotations for everything are enabled.
-
-It comes pre-configured with the following bundles:
-
-  * **FrameworkBundle** - The core Symfony framework bundle
-
-  * [**SensioFrameworkExtraBundle**][6] - Adds several enhancements, including
-    template and routing annotation capability
-
-  * [**DoctrineBundle**][7] - Adds support for the Doctrine ORM
-
-  * [**TwigBundle**][8] - Adds support for the Twig templating engine
-
-  * [**SecurityBundle**][9] - Adds security by integrating Symfony's security
-    component
-
-  * [**SwiftmailerBundle**][10] - Adds support for Swiftmailer, a library for
-    sending emails
-
-  * [**MonologBundle**][11] - Adds support for Monolog, a logging library
-
-  * [**AsseticBundle**][12] - Adds support for Assetic, an asset processing
-    library
-
-  * [**JMSSecurityExtraBundle**][13] - Allows security to be added via
-    annotations
-
-  * [**JMSDiExtraBundle**][14] - Adds more powerful dependency injection
-    features
-
-  * **WebProfilerBundle** (in dev/test env) - Adds profiling functionality and
-    the web debug toolbar
-
-  * **SensioDistributionBundle** (in dev/test env) - Adds functionality for
-    configuring and working with Symfony distributions
-
-  * [**SensioGeneratorBundle**][15] (in dev/test env) - Adds code generation
-    capabilities
-
-  * **AcmeDemoBundle** (in dev/test env) - A demo bundle with some example
-    code
-
-Enjoy!
-
-[1]:  http://symfony.com/doc/2.1/book/installation.html
-[2]:  http://getcomposer.org/
-[3]:  http://symfony.com/download
-[4]:  http://symfony.com/doc/2.1/quick_tour/the_big_picture.html
-[5]:  http://symfony.com/doc/2.1/index.html
-[6]:  http://symfony.com/doc/2.1/bundles/SensioFrameworkExtraBundle/index.html
-[7]:  http://symfony.com/doc/2.1/book/doctrine.html
-[8]:  http://symfony.com/doc/2.1/book/templating.html
-[9]:  http://symfony.com/doc/2.1/book/security.html
-[10]: http://symfony.com/doc/2.1/cookbook/email.html
-[11]: http://symfony.com/doc/2.1/cookbook/logging/monolog.html
-[12]: http://symfony.com/doc/2.1/cookbook/assetic/asset_management.html
-[13]: http://jmsyst.com/bundles/JMSSecurityExtraBundle/master
-[14]: http://jmsyst.com/bundles/JMSDiExtraBundle/master
-[15]: http://symfony.com/doc/2.1/bundles/SensioGeneratorBundle/index.html
+This will enable caching of storage API lookups into the file system. However it can easily be
+configured to instead use any of the caching backends supported by Doctrine Common and exposed
+by LiipDoctrineCacheBundle:
+https://github.com/liip/LiipDoctrineCacheBundle
